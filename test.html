@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+<style type="text/css">
+	.bg-orange{background: orange}
+</style>
+
+<div id="container">
+	<div id="a">This is shown in state A</div>
+	<div id="b">This is shown in state B
+		<div id="b1">This is shown in state B1</div>
+		<div id="b2">This is shown in state B2</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+STATESIDE = {
+	"/":    {"#container": "show", "#a,#b": "hide"},
+	"/A":    {"#a": "show"},
+	"/B":    {"#b": "show", "#b>div": "hide"},
+	"/B/1":    {"#b1": "show"},
+	"/B/2":    {"#b2": "show"},
+	"/B/2/orange":    {"#b2": {"bg-orange": true}}
+}
+</script>
+<script type="text/javascript" src="stateside.min.js"></script>
+</body>
+</html>
