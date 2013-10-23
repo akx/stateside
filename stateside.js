@@ -7,6 +7,48 @@
 		"#stateside-sel{background:transparent;font:8pt/10pt sans-serif;width:100%;color:#FFF;border:none}";
 	var document = window.document;
 	var body = document.body;
+	function trim(s) { return (""+s).replace(/^\s+|\s+$/g, ''); }
+
+	function parseSelectorState(selectorState) {
+		var output = {};
+		if(typeof selectorState == "string") {
+			selectorState.split(/\s+/).forEach(function(token) {
+				if(token === "show") {
+					output.$visible = true;
+				}
+				else if(token === "hide") {
+					output.$visible = false;
+				}
+				else {
+					var m = /^([+-])?(.+)$/.exec(token);
+					if(m) output[m[2]] = (m[1] !== "-");
+				}
+			});
+		} else {
+			for(var k in selectorState) {
+				if(selectorState.hasOwnProperty(k)) {
+					output[k] = selectorState[k];
+				}
+			}
+		}
+		return output;
+	}
+
+	function parseState(inputStateDefinition) {
+		if(typeof inputStateDefinition === "string") {
+			var parsedDefinition = {};
+			inputStateDefinition.split(/\s*;\s*/).forEach(function(p) {
+				p = p.split("=", 2);
+				parsedDefinition[trim(p[0])] = p[1];
+			});
+			inputStateDefinition = parsedDefinition;
+		}
+		var stateDefinition = {};
+		for(var selector in inputStateDefinition) {
+			stateDefinition[selector] = parseSelectorState(inputStateDefinition[selector]);
+		}
+		return stateDefinition;
+	}
 
 
 	function prepareStates() {
@@ -17,10 +59,12 @@
 
 		for(var key in STATESIDE) {
 			key = key.replace(/[/]+/g, '/');
-			var val = STATESIDE[key];
 			var path = key.split("/");
 			var parent = path.slice(0, path.length - 1).join("/") || "/";
-			states[key] = {state: val, parentName: (key != "/" ? parent : null)};
+			states[key] = {
+				state: parseState(STATESIDE[key]),
+				parentName: (key != "/" ? parent : null)
+			};
 			n++;
 		}
 		if(!n) return null;
@@ -28,8 +72,6 @@
 	}
 
 	function activateSelectorState(el, selectorState) {
-		if(selectorState === "show") selectorState = {"$visible": true};
-		if(selectorState === "hide") selectorState = {"$visible": false};
 		for(var key in selectorState) {
 			var val = selectorState[key];
 			switch(key) {

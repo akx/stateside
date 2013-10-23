@@ -22,9 +22,9 @@ STATESIDE = {
 	"/":    {"#container": "show", "#a,#b": "hide"},
 	"/A":    {"#a": "show"},
 	"/B":    {"#b": "show", "#b>div": "hide"},
-	"/B/1":    {"#b1": "show"},
-	"/B/2":    {"#b2": "show"},
-	"/B/2/orange":    {"#b2": {"bg-orange": true}}
+	"/B/1": "#b1=show", // fluent syntax
+	"/B/2":    {"#b2": "-bg-orange show"}, // fluent syntax for one selector
+	"/B/2/orange": {"#b2": "+bg-orange show"} // fluent syntax for one selector
 }
 </script>
 <script type="text/javascript" src="stateside.min.js"></script>
